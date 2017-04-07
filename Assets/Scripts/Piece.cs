@@ -35,7 +35,7 @@ abstract public class Piece : MonoBehaviour {
     };
 
     protected bool hasMoved = false;
-    bool notClicked = true;
+	bool clicked = false;
     protected Board gameBoard;
     public int allegiance;
     protected Point loc;
@@ -56,6 +56,11 @@ abstract public class Piece : MonoBehaviour {
         type = t;
     }
 
+	public void Clicker()
+	{
+		clicked = true;
+	}
+
 	// Use this for initialization
 	void Start () {
         gameBoard = Board.Instance;
@@ -63,11 +68,6 @@ abstract public class Piece : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.GetMouseButtonDown(0))
-        {
-            notClicked = !notClicked;
-            Debug.Log("User clicked piece");
-        }
 	}
 
     //returns hasMoved, which returns if the piece has moved from its initial location this game
@@ -174,7 +174,7 @@ abstract public class Piece : MonoBehaviour {
 
         }
     }
-
+	/*
     //Used for highlighting the piece
     void OnMouseEnter()
     {
@@ -189,5 +189,5 @@ abstract public class Piece : MonoBehaviour {
             GetComponent<Renderer>().material.shader = Shader.Find("Standard");
             gameBoard.unhighlight();
         }
-    }
+    }*/
 }
