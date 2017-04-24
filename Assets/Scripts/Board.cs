@@ -23,23 +23,36 @@ public class Board : Singleton<Board>
 
     bool gameActive;
     int turn = (int) PlayerE.White;
-    bool piecesUpdated = false;
-    Piece[,] boardPieces;
-    List<Piece> whiteList;
-    List<Piece> blackList;
+    bool piecesUpdated = true;
+    GameObject[,] boardPieces;
+    List<GameObject> whiteList;
+    List<GameObject> blackList;
     History firstHistory, lastHistory;
     Point enPassant;
-    Piece[] kings;
+    GameObject[] kings;
     public AIE ai;
+    public GameObject whitePawn;
+    public GameObject blackPawn;
+    public GameObject whiteRook;
+    public GameObject blackRook;
+    public GameObject whiteKnight;
+    public GameObject blackKnight;
+    public GameObject whiteBishop;
+    public GameObject blackBishop;
+    public GameObject whiteQueen;
+    public GameObject blackQueen;
+    public GameObject whiteKing;
+    public GameObject blackKing;
 
     // Use this for initialization
     void Start()
     {
-        boardPieces = new Piece[8, 8];
-        kings = new Piece[2];
-        whiteList = new List<Piece>();
-        blackList = new List<Piece>();
+        boardPieces = new GameObject[8, 8];
+        kings = new GameObject[2];
+        whiteList = new List<GameObject>();
+        blackList = new List<GameObject>();
         setupBoard();
+        runEasyAI();
     }
 
     // Update is called once per frame
@@ -81,83 +94,90 @@ public class Board : Singleton<Board>
     //This is effectively acting as the constructor for Board
     void setupBoard()
     {
-        boardPieces[0, 0] = new Rook((int)PlayerE.White, new Point(0,0), this, Piece.PieceTypeE.ROOK);
-        boardPieces[1, 0] = new Knight((int)PlayerE.White, new Point(1, 0), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[2, 0] = new Bishop((int)PlayerE.White, new Point(2, 0), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[3, 0] = new Queen((int)PlayerE.White, new Point(3, 0), this, Piece.PieceTypeE.QUEEN);
-        boardPieces[4, 0] = new King((int)PlayerE.White, new Point(4, 0), this, Piece.PieceTypeE.KING);
-        boardPieces[5, 0] = new Bishop((int)PlayerE.White, new Point(5, 0), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[6, 0] = new Knight((int)PlayerE.White, new Point(6, 0), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[7, 0] = new Rook((int)PlayerE.White, new Point(7, 0), this, Piece.PieceTypeE.ROOK);
-        boardPieces[0, 1] = new Pawn((int)PlayerE.White, new Point(0, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[1, 1] = new Pawn((int)PlayerE.White, new Point(1, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[2, 1] = new Pawn((int)PlayerE.White, new Point(2, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[3, 1] = new Pawn((int)PlayerE.White, new Point(3, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[4, 1] = new Pawn((int)PlayerE.White, new Point(4, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[5, 1] = new Pawn((int)PlayerE.White, new Point(5, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[6, 1] = new Pawn((int)PlayerE.White, new Point(6, 1), this, Piece.PieceTypeE.PAWN);
-        boardPieces[7, 1] = new Pawn((int)PlayerE.White, new Point(7, 1), this, Piece.PieceTypeE.PAWN);
+        generatePiece(PlayerE.White, new Point(0, 0), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
+        generatePiece(PlayerE.White, new Point(0, 1), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
+        generatePiece(PlayerE.White, new Point(0, 2), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
+        generatePiece(PlayerE.White, new Point(0, 3), Piece.PieceTypeE.QUEEN, whiteQueen, "Queen");
+        generatePiece(PlayerE.White, new Point(0, 4), Piece.PieceTypeE.KING, whiteKing, "King");
+        generatePiece(PlayerE.White, new Point(0, 5), Piece.PieceTypeE.BISHOP, whiteBishop, "Bishop");
+        generatePiece(PlayerE.White, new Point(0, 6), Piece.PieceTypeE.KNIGHT, whiteKnight, "Knight");
+        generatePiece(PlayerE.White, new Point(0, 7), Piece.PieceTypeE.ROOK, whiteRook, "Rook");
+        generatePiece(PlayerE.White, new Point(1, 0), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 1), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 2), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 3), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 4), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 5), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 6), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
+        generatePiece(PlayerE.White, new Point(1, 7), Piece.PieceTypeE.PAWN, whitePawn, "Pawn");
 
-        for(int i = 0; i < 8; i++)
-        {
-            whiteList.Add(boardPieces[0, i]);
-            whiteList.Add(boardPieces[1, i]);
-        }
-
-
-        boardPieces[0, 6] = new Pawn((int)PlayerE.Black, new Point(0, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[1, 6] = new Pawn((int)PlayerE.Black, new Point(1, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[2, 6] = new Pawn((int)PlayerE.Black, new Point(2, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[3, 6] = new Pawn((int)PlayerE.Black, new Point(3, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[4, 6] = new Pawn((int)PlayerE.Black, new Point(4, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[5, 6] = new Pawn((int)PlayerE.Black, new Point(5, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[6, 6] = new Pawn((int)PlayerE.Black, new Point(6, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[7, 6] = new Pawn((int)PlayerE.Black, new Point(7, 6), this, Piece.PieceTypeE.PAWN);
-        boardPieces[0, 7] = new Rook((int)PlayerE.Black, new Point(0, 7), this, Piece.PieceTypeE.ROOK);
-        boardPieces[1, 7] = new Knight((int)PlayerE.Black, new Point(1, 7), this, Piece.PieceTypeE.KNIGHT);
-        boardPieces[2, 7] = new Bishop((int)PlayerE.Black, new Point(2, 7), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[3, 7] = new Queen((int)PlayerE.Black, new Point(3, 7), this, Piece.PieceTypeE.QUEEN);
-        boardPieces[4, 7] = new King((int)PlayerE.Black, new Point(4, 7), this, Piece.PieceTypeE.KING);
-        boardPieces[5, 7] = new Bishop((int)PlayerE.Black, new Point(5, 7), this, Piece.PieceTypeE.BISHOP);
-        boardPieces[6, 7] = new Knight((int)PlayerE.Black, new Point(6, 7), this, Piece.PieceTypeE.KING);
-        boardPieces[7, 7] = new Rook((int)PlayerE.Black, new Point(7, 7), this, Piece.PieceTypeE.ROOK);
-
-        for (int i = 0; i < 8; i++)
-        {
-            blackList.Add(boardPieces[6, i]);
-            blackList.Add(boardPieces[7, i]);
-        }
-
-        kings[0] = boardPieces[4, 0];
-        kings[1] = boardPieces[4, 7];
+        generatePiece(PlayerE.Black, new Point(6, 0), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 1), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 2), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 3), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 4), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 5), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 6), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(6, 7), Piece.PieceTypeE.PAWN, blackPawn, "Pawn");
+        generatePiece(PlayerE.Black, new Point(7, 0), Piece.PieceTypeE.ROOK, blackRook, "Rook");
+        generatePiece(PlayerE.Black, new Point(7, 1), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
+        generatePiece(PlayerE.Black, new Point(7, 2), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
+        generatePiece(PlayerE.Black, new Point(7, 3), Piece.PieceTypeE.QUEEN, blackQueen, "Queen");
+        generatePiece(PlayerE.Black, new Point(7, 4), Piece.PieceTypeE.KING, blackKing, "King");
+        generatePiece(PlayerE.Black, new Point(7, 5), Piece.PieceTypeE.BISHOP, blackBishop, "Bishop");
+        generatePiece(PlayerE.Black, new Point(7, 6), Piece.PieceTypeE.KNIGHT, blackKnight, "Knight");
+        generatePiece(PlayerE.Black, new Point(7, 7), Piece.PieceTypeE.ROOK, blackRook, "Rook");
 
         firstHistory = null;
         lastHistory = null;
         enPassant = null;
     }
 
+    public void generatePiece(PlayerE player, Point p, Piece.PieceTypeE piece, GameObject prefab, string str)
+    {
+        GameObject go = Instantiate(prefab, new Vector3(p.turnToWorld()[0], 0.75f, p.turnToWorld()[1]), Quaternion.identity);
+        ((Piece)go.GetComponent(str)).initialize((int)player, p, this, piece);
+        if (piece == Piece.PieceTypeE.KING)
+            go.transform.localScale = new Vector3(1f, 1f, 1f);
+        else
+            go.transform.localScale = new Vector3(4f, 4f, 4f);
+        boardPieces[p.getX(), p.getY()] = go;
+        if (player == PlayerE.White)
+            whiteList.Add(boardPieces[p.getX(), p.getY()]);
+        else
+            blackList.Add(boardPieces[p.getX(), p.getY()]);
+        if(piece == Piece.PieceTypeE.KING)
+        {
+            if (player == PlayerE.White)
+                kings[0] = boardPieces[p.getX(), p.getY()];
+            else
+                kings[1] = boardPieces[p.getX(), p.getY()];
+        }
+    }
+
     //Returns the piece located at the point p (null if no piece)
-    public Piece pieceAt(Point p)
+    public GameObject pieceAt(Point p)
     {
         return boardPieces[p.getX() , p.getY()];
     }
 
     //Returns the piece located at (x,y) (null if no piece)
-    public Piece pieceAt(int x, int y)
+    public GameObject pieceAt(int x, int y)
     {
         return boardPieces[x, y];
     }
 
     //Moves the piece located at the point p to the point pt
-    public void placePieceAt(Piece p, Point pt)
+    public void placePieceAt(GameObject p, Point pt)
     {
         if (boardPieces[pt.getX(), pt.getY()] != null)
         {
-            if (boardPieces[pt.getX(), pt.getY()].getAllegiance() == 0)
+            if (((Piece)boardPieces[pt.getX(), pt.getY()].GetComponent("Piece")).getAllegiance() == 0)
                 whiteList.Remove(boardPieces[pt.getX(), pt.getY()]);
             else
                 blackList.Remove(boardPieces[pt.getX(), pt.getY()]);
         }
+        ((Piece)p.GetComponent("Piece")).moveObjectLoc(pt);
         boardPieces[pt.getX(), pt.getY()] = p;
     }
 
@@ -172,9 +192,9 @@ public class Board : Singleton<Board>
     //Switches the current turn
     public void Move(Point p1, Point p2, Point ep)
     {
-        History temp_hist = new History(p1, p2, this, lastHistory);
-        lastHistory.setNext(temp_hist);
-        lastHistory = temp_hist;
+        // History temp_hist = new History(p1, p2, this, lastHistory);
+        //lastHistory.setNext(temp_hist);
+        //lastHistory = temp_hist;
         enPassant = ep;
         switchTurn();
         piecesUpdated = true;
@@ -185,7 +205,7 @@ public class Board : Singleton<Board>
     //Calls tryToMove for the piece at p1 to move to p2
     public void tryToMove(Point p1, Point p2)
     {
-        Piece temp_piece = pieceAt(p1);
+        Piece temp_piece = (Piece)pieceAt(p1).GetComponent("Piece");
         if (temp_piece != null)
         {
             temp_piece.tryToMove(p2);
@@ -197,7 +217,7 @@ public class Board : Singleton<Board>
     {
         if(boardPieces[enPassant.getX(), enPassant.getY()] != null)
         {
-            if (boardPieces[enPassant.getX(), enPassant.getY()].getAllegiance() == 0)
+            if (((Piece)boardPieces[enPassant.getX(), enPassant.getY()].GetComponent("Piece")).getAllegiance() == 0)
                 whiteList.Remove(boardPieces[enPassant.getX(), enPassant.getY()]);
             else
                 blackList.Remove(boardPieces[enPassant.getX(), enPassant.getY()]);
@@ -208,12 +228,12 @@ public class Board : Singleton<Board>
     //Tests if moving a piece from start to finish would put the current turn's king in check
     public bool inCheck(Point start, Point finish)
     {
-        Piece startPiece = boardPieces[start.getX(), start.getY()];
-        Piece finishPiece = boardPieces[finish.getX(), finish.getY()];
+        GameObject startPiece = boardPieces[start.getX(), start.getY()];
+        GameObject finishPiece = boardPieces[finish.getX(), finish.getY()];
 
         boardPieces[finish.getX(), finish.getY()] = startPiece;
 
-        bool flag = inCheck(kings[turn].getLoc());
+        bool flag = inCheck(((Piece)kings[turn].GetComponent("Piece")).getLoc());
         boardPieces[start.getX(), start.getY()] = startPiece;
         boardPieces[finish.getX(), finish.getY()] = finishPiece;
 
@@ -225,21 +245,21 @@ public class Board : Singleton<Board>
     {
         for(int i = 0; i < 7; i++)
             for(int j = 0; j < 7; j++)
-                if(boardPieces[i,j] != null && boardPieces[i,j].getAllegiance() != turn)
-                    if (boardPieces[i, j].canMove(p) != Piece.MoveTypesE.ILLEGAL)
+                if(boardPieces[i,j] != null && ((Piece)boardPieces[i,j].GetComponent("Piece")).getAllegiance() != turn)
+                    if (((Piece)boardPieces[i, j].GetComponent("Piece")).canMove(p) != Piece.MoveTypesE.ILLEGAL)
                         return true;
         return false;
     }
 
     //Tests if you pick up notKing and king, if the king is placed at (xloc, yloc) then if the king is in check
     //Used for castling
-    public bool inCheck(Piece notKing, Piece king, int xloc, int yloc)
+    public bool inCheck(GameObject notKing, GameObject king, int xloc, int yloc)
     {
-        boardPieces[notKing.getLoc().getX(), notKing.getLoc().getY()] = null;
-        boardPieces[king.getLoc().getX(), king.getLoc().getY()] = null;
+        boardPieces[((Piece)notKing.GetComponent("Piece")).getLoc().getX(), ((Piece)notKing.GetComponent("Piece")).getLoc().getY()] = null;
+        boardPieces[((Piece)king.GetComponent("Piece")).getLoc().getX(), ((Piece)king.GetComponent("Piece")).getLoc().getY()] = null;
         bool flag = inCheck(new Point(xloc, yloc));
-        boardPieces[notKing.getLoc().getX(), notKing.getLoc().getY()] = notKing;
-        boardPieces[king.getLoc().getX(), king.getLoc().getY()] = king;
+        boardPieces[((Piece)notKing.GetComponent("Piece")).getLoc().getX(), ((Piece)notKing.GetComponent("Piece")).getLoc().getY()] = notKing;
+        boardPieces[((Piece)king.GetComponent("Piece")).getLoc().getX(), ((Piece)king.GetComponent("Piece")).getLoc().getY()] = king;
         return flag;
     }
     
@@ -251,7 +271,7 @@ public class Board : Singleton<Board>
             whiteList.Remove(boardPieces[p.getX(), p.getY()]);
         else
             blackList.Remove(boardPieces[p.getX(), p.getY()]);
-        boardPieces[p.getX(), p.getY()] = new Queen(turn, p, this, Piece.PieceTypeE.QUEEN);
+        generatePiece((turn == 1)?PlayerE.White:PlayerE.Black, p, Piece.PieceTypeE.QUEEN, blackQueen, "Queen");
         if (turn == 0)
             whiteList.Add(boardPieces[p.getX(), p.getY()]);
         else
@@ -281,8 +301,8 @@ public class Board : Singleton<Board>
     {
         for (int i = 0; i < 7; i++)
             for (int j = 0; j < 7; j++)
-                if (boardPieces[i, j] != null && boardPieces[i, j].getAllegiance() == turn)
-                    if (boardPieces[i, j].canMoveList().Count > 0)
+                if (boardPieces[i, j] != null && ((Piece)boardPieces[i, j].GetComponent("Piece")).getAllegiance() == turn)
+                    if (((Piece)boardPieces[i, j].GetComponent("Piece")).canMoveList().Count > 0)
                         return false;
         return true;
     }
@@ -290,10 +310,10 @@ public class Board : Singleton<Board>
     //Compute a score for the player indicated
     public int computePlayerScore(int inScore, PlayerE currPlayer)
     {
-        foreach (Piece p in whiteList)
-            inScore += (p.getPieceScore() + p.canMoveList().Count);
-        foreach (Piece p in blackList)
-            inScore -= (p.getPieceScore() + p.canMoveList().Count);
+        foreach (GameObject p in whiteList)
+            inScore += (((Piece)p.GetComponent("Piece")).getPieceScore() + ((Piece)p.GetComponent("Piece")).canMoveList().Count);
+        foreach (GameObject p in blackList)
+            inScore -= (((Piece)p.GetComponent("Piece")).getPieceScore() + ((Piece)p.GetComponent("Piece")).canMoveList().Count);
         return inScore;
     }
 
@@ -302,15 +322,18 @@ public class Board : Singleton<Board>
     //Hopefully not too computationally expensive
     public void runEasyAI()
     {
+        Debug.Log("Starting AI ...");
         bool flag = true;
         if(turn == (int)PlayerE.White)
         {
             while (flag)
             {
+                Debug.Log(whiteList.Count);
                 int randPieceInt = Random.Range(0, whiteList.Count);
-                Piece randPiece = whiteList[randPieceInt];
+                Piece randPiece = (Piece)whiteList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
-                if(pointList != null)
+                Debug.Log(pointList.Count);
+                if(pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
                     randPiece.tryToMove(randomPoint);
@@ -323,9 +346,9 @@ public class Board : Singleton<Board>
             while (flag)
             {
                 int randPieceInt = Random.Range(0, blackList.Count);
-                Piece randPiece = blackList[randPieceInt];
+                Piece randPiece = (Piece)blackList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
-                if (pointList != null)
+                if (pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
                     randPiece.tryToMove(randomPoint);
@@ -340,12 +363,13 @@ public class Board : Singleton<Board>
     public void runNormalAI()
     {
         bool flag = true;
+        StartCoroutine(WaitNSeconds(20));
         if (turn == (int)PlayerE.White)
         {
             while (flag)
             {
                 int randPieceInt = Random.Range(0, whiteList.Count);
-                Piece randPiece = whiteList[randPieceInt];
+                Piece randPiece = (Piece)whiteList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
                 if (pointList != null)
                 {
@@ -360,7 +384,7 @@ public class Board : Singleton<Board>
             while (flag)
             {
                 int randPieceInt = Random.Range(0, blackList.Count);
-                Piece randPiece = blackList[randPieceInt];
+                Piece randPiece = (Piece)blackList[randPieceInt].GetComponent("Piece");
                 List<Point> pointList = randPiece.canMoveList();
                 if (pointList != null)
                 {
@@ -370,5 +394,10 @@ public class Board : Singleton<Board>
                 }
             }
         }
+    }
+
+    IEnumerator WaitNSeconds(int n)
+    {
+        yield return new WaitForSeconds(n);
     }
 }

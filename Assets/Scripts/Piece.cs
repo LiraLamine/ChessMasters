@@ -49,6 +49,15 @@ abstract public class Piece : MonoBehaviour {
         allegiance = (int)Board.PlayerE.White;
     }
 
+    public virtual void initialize(int all, Point p, Board b, PieceTypeE t)
+    {
+        allegiance = all;
+        loc = p;
+        gameBoard = b;
+        type = t;
+        Debug.Log("piece Created at (x,y): (" + p.getX() + ", " + p.getY() + ")");
+    }
+
     //Constructor with color, location, and a reference to the board
     public Piece(int all, Point p, Board b, PieceTypeE t)
     {
@@ -62,14 +71,11 @@ abstract public class Piece : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         gameBoard = Board.Instance;
-		if(allegiance == 0)
-			Instantiate(Whiteprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
-		else
-			Instantiate(Blackprefab, new Vector3(loc.turnToWorld()[0], 0.25f, loc.turnToWorld()[1]), Quaternion.identity);
 	}
 	
 	// Update is called once per frame
 	void Update () {
+        //Debug.Log("Piece existing is being Updated!");
         if (Input.GetMouseButtonDown(0))
         {
             notClicked = !notClicked;
@@ -81,6 +87,12 @@ abstract public class Piece : MonoBehaviour {
     public bool getHasMoved()
     {
         return hasMoved;
+    }
+
+    public void moveObjectLoc(Point pt)
+    {
+        loc = pt;
+        gameObject.transform.position = new Vector3(pt.turnToWorld()[0], 1f, pt.turnToWorld()[1]);
     }
 
     //Calculates an array of points piece can legally move to
@@ -102,15 +114,15 @@ abstract public class Piece : MonoBehaviour {
             return MoveTypesE.ILLEGAL;
         if((p.getX() >= 0) && (p.getX() <= 7) && (p.getY() >= 0) && (p.getY() <= 7))
         {
-            if (gameBoard.inCheck(loc, p))
+            /*if (gameBoard.inCheck(loc, p))
             {
                 return MoveTypesE.ILLEGAL;
-            }
+            }*/
             if (gameBoard.pieceAt(p) == null)
             {
                 return MoveTypesE.NORMAL;
             }
-            else if (gameBoard.pieceAt(p).getAllegiance() != allegiance)
+            else if (((Piece)gameBoard.pieceAt(p).GetComponent("Piece")).getAllegiance() != allegiance)
                 return MoveTypesE.CAPTURE;
         }
         return MoveTypesE.ILLEGAL;
@@ -183,7 +195,7 @@ abstract public class Piece : MonoBehaviour {
     }
 
     //Used for highlighting the piece
-    void OnMouseEnter()
+    /*void OnMouseEnter()
     {
         GetComponent<Renderer>().material.shader = Shader.Find("Outlined/Silhouetted Diffuse");
     }
@@ -196,5 +208,5 @@ abstract public class Piece : MonoBehaviour {
             GetComponent<Renderer>().material.shader = Shader.Find("Standard");
             gameBoard.unhighlight();
         }
-    }
+    }*/
 }

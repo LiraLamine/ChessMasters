@@ -10,10 +10,7 @@ public class Knight : Piece {
 
     public Knight(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
-		if(all == 0)
-			Instantiate(Whiteprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
-		else
-			Instantiate(Blackprefab, new Vector3(p.turnToWorld()[0], 0.25f, p.turnToWorld()[1]), Quaternion.identity);
+
     }
 
     override public List<Point> canMoveList()
@@ -43,6 +40,15 @@ public class Knight : Piece {
             retMoveList.Add(p7);
         if (canMove(p8) != MoveTypesE.ILLEGAL)
             retMoveList.Add(p8);
+
+        Debug.Log("Knight at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
+        foreach (Point p in retMoveList)
+        {
+            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
+        }
+        if (retMoveList.Count == 0)
+            Debug.Log("No Possible Moves");
+
         return retMoveList;
     }
 
