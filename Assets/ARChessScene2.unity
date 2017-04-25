@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameMode: 0
-  ai: 0
+  ai: 1
   whitePawn: {fileID: 1830649645806748, guid: 98e035fe179cd4ca7be1d2b56eabd578, type: 2}
   blackPawn: {fileID: 1984254949113868, guid: 158bb607e0d52468ea1123acc6054817, type: 2}
   whiteRook: {fileID: 1559312313010798, guid: a0bd12f9a71904917b8e3aef81928452, type: 2}
