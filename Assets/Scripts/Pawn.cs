@@ -29,6 +29,9 @@ public class Pawn : Piece {
     /// <param name="t">The type of piece being created.</param>
     public Pawn(int all, Point p, Board b, PieceTypeE t) : base(all, p, b,t)
     {
+<<<<<<< HEAD
+        direction = (all == 0)? 1 : -1;
+=======
 
     }
 
@@ -47,6 +50,7 @@ public class Pawn : Piece {
             direction = 1;
         else
             direction = -1;
+>>>>>>> origin/master
     }
 
     /// <summary>
@@ -63,21 +67,12 @@ public class Pawn : Piece {
                 if (canMove(pt) != MoveTypesE.ILLEGAL)
                     retMoveList.Add(pt);
             }
-        if(!hasMoved)
+        if (!hasMoved && canMove(new Point(loc.getX() + direction, loc.getY())) != MoveTypesE.ILLEGAL)
         {
             Point pt = new Point(loc.getX() + 2 * direction, loc.getY());
             if (canMove(pt) != MoveTypesE.ILLEGAL)
                 retMoveList.Add(pt);
         }
-
-        Debug.Log("Pawn at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
-        foreach (Point p in retMoveList)
-        {
-            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
-        }
-        if (retMoveList.Count == 0)
-            Debug.Log("No Possible Moves");
-
         return retMoveList;
     }
 
@@ -96,14 +91,19 @@ public class Pawn : Piece {
         int dx = p.getX() - loc.getX();
         if (dx == direction)
         {
+<<<<<<< HEAD
+            Piece pAt = gameBoard.pieceAt(p);
+            if ((System.Math.Abs(dx) == 1) && pAt == null)
+=======
             Piece pAt;
             if (gameBoard.pieceAt(p) == null)
                 pAt = null;
             else
                 pAt = (Piece)gameBoard.pieceAt(p).GetComponent("Piece");
             if ((System.Math.Abs(dy) == 1) && pAt == null)
+>>>>>>> origin/master
             {
-                if (gameBoard.getEnPassant() != null && gameBoard.getEnPassant() == p)
+                if (gameBoard.getEnPassant() == p)
                     return MoveTypesE.ENPASSANT;
             }
             else if ((System.Math.Abs(dy) == 1) && (getAllegiance() != pAt.getAllegiance()))
@@ -113,7 +113,7 @@ public class Pawn : Piece {
                 else
                     return MoveTypesE.CAPTURE;
             }
-            if ((dy == 0) && pAt == null)
+            if ((dy == 0) && (System.Math.Abs(dx) == 1) && pAt == null)
             {
                 if ((direction == 1 && p.getX() == 7) || (direction == -1 && p.getX() == 0))
                     return MoveTypesE.PROMOTE;
@@ -121,7 +121,7 @@ public class Pawn : Piece {
                     return MoveTypesE.NORMAL;
             }
         }
-        if (!hasMoved && (dx == 2 * direction) && (dy == 0) && (gameBoard.pieceAt(p) == null) && (gameBoard.pieceAt(p.getX() + direction, p.getY()) == null))
+        if (!hasMoved && (System.Math.Abs(dx) == 2) && (dy == 0) && (gameBoard.pieceAt(p) == null) && (gameBoard.pieceAt(p.getX() - direction, p.getY()) == null))
             return MoveTypesE.DOUBLESTEP;
         return MoveTypesE.ILLEGAL;
     }

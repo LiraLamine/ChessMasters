@@ -10,7 +10,10 @@ public class Bishop : Piece {
 
     public Bishop(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
-
+		if(all == 0)
+			Instantiate(whitebishop, new Vector3(x, y, 0), Quaternion.identity);
+		else
+			Instantiate(blackbishop, new Vector3(p.turnToWorld()[0], 0.25, p.turnToWorld()[1]), Quaternion.identity);
     }
 
     //Create list of valid moves moving along diagonal until finding illegal move
@@ -50,15 +53,6 @@ public class Bishop : Piece {
             else
                 retMoveList.Add(p);
         }
-
-        Debug.Log("Bishop at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
-        foreach (Point p in retMoveList)
-        {
-            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
-        }
-        if (retMoveList.Count == 0)
-            Debug.Log("No Possible Moves");
-
         return retMoveList;
     }
 

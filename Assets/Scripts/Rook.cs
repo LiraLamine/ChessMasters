@@ -26,7 +26,7 @@ public class Rook : Piece {
     /// <param name="t">The type of piece being created.</param>
     public Rook(int all, Point p, Board b, PieceTypeE t) : base(all, p, b, t)
     {
-		
+
     }
 
     /// <summary>
@@ -69,15 +69,6 @@ public class Rook : Piece {
             else
                 retMoveList.Add(p);
         }
-
-        Debug.Log("Rook at (" + loc.getX() + ", " + loc.getY() + ") can move to: ");
-        foreach (Point p in retMoveList)
-        {
-            Debug.Log("(" + p.getX() + ", " + p.getY() + ")");
-        }
-        if (retMoveList.Count == 0)
-            Debug.Log("No Possible Moves");
-
         return retMoveList;
     }
 

@@ -41,27 +41,16 @@ abstract public class Piece : MonoBehaviour {
     };
 
     protected bool hasMoved = false;
-    bool notClicked = true;
+	bool clicked = false;
     protected Board gameBoard;
     int allegiance;
     protected Point loc;
     protected PieceTypeE type;
-	public GameObject Whiteprefab;
-	public GameObject Blackprefab;
 
     //Default constructor, should never be used
     public Piece()
     {
         allegiance = (int)Board.PlayerE.White;
-    }
-
-    public virtual void initialize(int all, Point p, Board b, PieceTypeE t)
-    {
-        allegiance = all;
-        loc = p;
-        gameBoard = b;
-        type = t;
-        Debug.Log("piece Created at (x,y): (" + p.getX() + ", " + p.getY() + ")");
     }
 
     //Constructor with color, location, and a reference to the board
@@ -71,8 +60,12 @@ abstract public class Piece : MonoBehaviour {
         loc = p;
         gameBoard = b;
         type = t;
-		Debug.Log ("piece Created " + p.getX() + ", " + p.getY());
     }
+
+	public void Clicker()
+	{
+		clicked = true;
+	}
 
 	// Use this for initialization
 	void Start () {
@@ -81,24 +74,12 @@ abstract public class Piece : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        //Debug.Log("Piece existing is being Updated!");
-        if (Input.GetMouseButtonDown(0))
-        {
-            notClicked = !notClicked;
-            Debug.Log("User clicked piece");
-        }
 	}
 
     //returns hasMoved, which returns if the piece has moved from its initial location this game
     public bool getHasMoved()
     {
         return hasMoved;
-    }
-
-    public void moveObjectLoc(Point pt)
-    {
-        loc = pt;
-        gameObject.transform.position = new Vector3(pt.turnToWorld()[0], 1f, pt.turnToWorld()[1]);
     }
 
     //Calculates an array of points piece can legally move to
@@ -120,15 +101,15 @@ abstract public class Piece : MonoBehaviour {
             return MoveTypesE.ILLEGAL;
         if((p.getX() >= 0) && (p.getX() <= 7) && (p.getY() >= 0) && (p.getY() <= 7))
         {
-            /*if (gameBoard.inCheck(loc, p))
+            if (gameBoard.inCheck(loc, p))
             {
                 return MoveTypesE.ILLEGAL;
-            }*/
+            }
             if (gameBoard.pieceAt(p) == null)
             {
                 return MoveTypesE.NORMAL;
             }
-            else if (((Piece)gameBoard.pieceAt(p).GetComponent("Piece")).getAllegiance() != allegiance)
+            else if (gameBoard.pieceAt(p).getAllegiance() != allegiance)
                 return MoveTypesE.CAPTURE;
         }
         return MoveTypesE.ILLEGAL;
@@ -199,9 +180,9 @@ abstract public class Piece : MonoBehaviour {
 
         }
     }
-
+	/*
     //Used for highlighting the piece
-    /*void OnMouseEnter()
+    void OnMouseEnter()
     {
         GetComponent<Renderer>().material.shader = Shader.Find("Outlined/Silhouetted Diffuse");
     }
