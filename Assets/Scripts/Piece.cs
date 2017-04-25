@@ -3,6 +3,12 @@ using UnityEngine;
 
 abstract public class Piece : MonoBehaviour {
 
+    public enum PieceColor
+    {
+        WHITE,
+
+    }
+
     public enum MoveTypesE
     {
         ILLEGAL,
@@ -37,7 +43,7 @@ abstract public class Piece : MonoBehaviour {
     protected bool hasMoved = false;
 	bool clicked = false;
     protected Board gameBoard;
-    public int allegiance;
+    int allegiance;
     protected Point loc;
     protected PieceTypeE type;
 
