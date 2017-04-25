@@ -159,6 +159,7 @@ public class Board : Singleton<Board>
             else
                 blackList.Remove(boardPieces[pt.getX(), pt.getY()]);
         }
+        Destroy(pieceAt(pt));
         ((Piece)p.GetComponent("Piece")).moveObjectLoc(pt);
         boardPieces[pt.getX(), pt.getY()] = p;
     }
@@ -254,7 +255,7 @@ public class Board : Singleton<Board>
             whiteList.Remove(boardPieces[p.getX(), p.getY()]);
         else
             blackList.Remove(boardPieces[p.getX(), p.getY()]);
-        generatePiece((turn == 1)?PlayerE.White:PlayerE.Black, p, Piece.PieceTypeE.QUEEN, blackQueen, "Queen");
+        generatePiece((turn == 1)?PlayerE.White:PlayerE.Black, p, Piece.PieceTypeE.QUEEN, (turn==1)?whiteQueen:blackQueen, "Queen");
         if (turn == 0)
             whiteList.Add(boardPieces[p.getX(), p.getY()]);
         else
@@ -320,6 +321,7 @@ public class Board : Singleton<Board>
                 if(pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
+                    yield return new WaitForSeconds(2);
                     randPiece.tryToMove(randomPoint);
                     flag = false;
                 }
@@ -336,6 +338,7 @@ public class Board : Singleton<Board>
                 if (pointList.Count != 0)
                 {
                     Point randomPoint = pointList[Random.Range(0, pointList.Count)];
+                    yield return new WaitForSeconds(2);
                     randPiece.tryToMove(randomPoint);
                     flag = false;
                 }

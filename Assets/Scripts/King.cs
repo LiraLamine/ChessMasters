@@ -67,7 +67,7 @@ public class King : Piece {
         int dy = p.getY() - loc.getY();
         int dx = p.getX() - loc.getX();
 
-        if ((System.Math.Abs(dx) <= 1 && System.Math.Abs(dx) <= 1))
+        if ((System.Math.Abs(dx) <= 1 && System.Math.Abs(dy) <= 1))
             return mt;
 
         if(!hasMoved && System.Math.Abs(dy) == 2 && dx == 0)
@@ -121,11 +121,11 @@ public class King : Piece {
                 gameBoard.Move(loc, p);
                 if (loc.getX() > p.getX())
                 {
-                    gameBoard.Move(new Point(p.getX(), 0), new Point(p.getX(), p.getY() + 1));
+                    gameBoard.Move(new Point(p.getX(), 0), new Point(p.getX() + 1, p.getY()));
                 }
                 else
                 {
-                    gameBoard.Move(new Point(p.getX(), 7), new Point(p.getX(), p.getY() - 1));
+                    gameBoard.Move(new Point(p.getX(), 7), new Point(p.getX() - 1, p.getY()));
                 }
             }
             else
